@@ -1,4 +1,11 @@
 vim.cmd('colorscheme habamax')
+
+--[[
+For later:
+code-runner
+friendly snippit
+]]
+
 -- Error theme:
 --0=========================================================================0
 -- █▀ █▀▀ ▀█▀ ▀█▀ █ █▄░█ █▀▀ █▀
@@ -60,14 +67,65 @@ vim.o.signcolumn = 'yes'
 --0=========================================================================0
 
 
+--
 -- jacob added
+--
+
+-- Ctrl S for saving and going to normal mode
 rm('n', "<C-s>", "<Cmd>w!<CR>")
 rm('i', "<C-s>", "<Cmd>w!|stopinsert<CR>")
-rm('n', '<leader>fs', '<Cmd>FlutterRun<CR>')       -- [f]lutter [s]tart
-rm('n', '<leader>fr', '<Cmd>FlutterReload<CR>')    -- [f]lutter [r]eload
-rm('n', '<leader>fR', '<Cmd>FlutterRestart<CR>')   -- [f]lutter [R]restart
-rm('n', '<leader>fe', '<Cmd>FlutterEmulators<CR>') -- [f]lutter [e]emulators
-rm('n', '<leader>fq', '<Cmd>FlutterQuit<CR>')      -- [f]lutter [q]uit
+
+-- Center after jumping half pages
+rm('n', '<C-u>', '<C-u>zz')
+rm('n', '<C-d>', '<C-d>zz')
+
+
+-- Flutter
+rm('n', '<leader>fs', '<Cmd>FlutterRun<CR>', { desc = "[F]lutter [S]tart" })           -- [f]lutter [s]tart
+rm('n', '<leader>fr', '<Cmd>FlutterReload<CR>', { desc = "[F]lutter [R]eload" })       -- [f]lutter [r]eload
+rm('n', '<leader>fR', '<Cmd>FlutterRestart<CR>', { desc = "[F]lutter [R]estart" })     -- [f]lutter [R]restart
+rm('n', '<leader>fe', '<Cmd>FlutterEmulators<CR>', { desc = "[F]lutter [E]mulators" }) -- [f]lutter [e]emulators
+rm('n', '<leader>fq', '<Cmd>FlutterQuit<CR>', { desc = "[F]lutter [Q]uit" })           -- [f]lutter [q]uit
+
+-- Undo Tree
+rm('n', '<F5>', '<Cmd>UndotreeToggle<CR>')
+
+-- LSP
+vim.keymap.set('n', 'gD', vim.lsp.buf.declaration)
+vim.keymap.set('n', 'gd', vim.lsp.buf.definition)
+-- vim.keymap.set('n', 'K', vim.lsp.buf.hover)
+rm('n', 'K', vim.lsp.buf.hover)
+vim.keymap.set('n', 'gi', vim.lsp.buf.implementation)
+vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help)
+
+rm('n', '<leader>.', vim.lsp.buf.code_action, { desc = "Code Action" })
+
+-- Renamer
+vim.api.nvim_set_keymap('i', '<F2>', '<cmd>lua require("renamer").rename()<cr>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>rn', '<cmd>lua require("renamer").rename()<cr>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', '<leader>rn', '<cmd>lua require("renamer").rename()<cr>', { noremap = true, silent = true })
+
+--LSP
+rm("n", "<leader>rn", vim.lsp.buf.rename, { desc = "[R]e[n]ame" })
+rm('n', '<leader>gd', vim.lsp.buf.definition, { desc = "[G]oto [D]efinition" })
+rm('n', '<leader>ga', vim.lsp.buf.code_action, { desc = "[G]oto [A]ction" })
+rm('n', '<leader>sdd', vim.diagnostic.setloclist, { desc = "[S]earch [D]iagnostics" })
+-- rm('n', '<leader>sd', "<Cmd>Telescope diagnostics <CR>", { desc = '[S]earch [D]iagnostics' })
+-- rm('n', '<leader>sd', "<Cmd>Telescope diagnostics severity_bound=ERROR <CR>", { desc = '[S]earch [D]iagnostics' })
+rm('n', '<leader>sd', "<Cmd>Telescope diagnostics severity_bound=ERROR <CR>", { desc = '[S]earch [D]iagnostics' })
+
+
+-- S&R -> replace word under cursor across file
+-- rm('n', '<leader>s', [[:%s/<C-r><C-w>//gc<Left><Left><Left>]])
+-- S&R -> replace selected phrase across file
+rm('v', '<leader>s', [[y:%s/<C-r>"//gc<Left><Left><Left>]])
+-- S&R -> select text, press and write what to search for and replace
+rm('v', '<leader>sr', [[:s///gI<Left><Left><Left><Left>]])
+--
+-- /jacob added
+--
+
+
 
 -- QOL:
 -- Search centering
@@ -173,6 +231,7 @@ require("lazy").setup({
       rm('n', '<leader>fg', builtin.live_grep)
       rm('n', '<leader>fb', builtin.buffers)
       rm('n', '<leader>fh', builtin.help_tags)
+      rm('n', '<leader>lr', builtin.lsp_references)
       -- telescope's setup
       require('telescope').setup {
         defaults = {
@@ -301,6 +360,16 @@ require("lazy").setup({
           },
         },
       })
+      lspconfig.jedi_language_server.setup({
+        -- on_attach = custom_attach,
+        -- capabilities = capabilities,
+        -- init_options = {
+        --   diagnostics = {
+        --     -- enable = false,
+        --   },
+        -- },
+      })
+
       --0=============================================================================================0
       -- █▀▄ ▄▀█ █▀█ ▀█▀
       -- █▄▀ █▀█ █▀▄  █
@@ -315,6 +384,44 @@ require("lazy").setup({
       --    COPY PASTE SERVER SETTINGS HERE
       --})
     end
+  },
+  {
+    'filipdutescu/renamer.nvim',
+  },
+  {
+    -- Colored Parentheses
+    'HiPhish/rainbow-delimiters.nvim',
+    config = function()
+      require('rainbow-delimiters.setup').setup({
+        strategy = {
+          -- [''] = rainbow_delimiters.strategy['global'],
+          -- vim = rainbow_delimiters.strategy['local'],
+        },
+        query = {
+          [''] = 'rainbow-delimiters',
+          lua = 'rainbow-blocks',
+        },
+        priority = {
+          [''] = 110,
+          lua = 210,
+        },
+        highlight = {
+          'RainbowDelimiterRed',
+          'RainbowDelimiterYellow',
+          'RainbowDelimiterBlue',
+          'RainbowDelimiterOrange',
+          'RainbowDelimiterGreen',
+          'RainbowDelimiterViolet',
+          'RainbowDelimiterCyan',
+        },
+      })
+    end,
+  },
+  {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    ft = { "markdown" },
+    build = function() vim.fn["mkdp#util#install"]() end,
   },
   {
     "folke/which-key.nvim",
@@ -340,9 +447,49 @@ require("lazy").setup({
           lsp_fallback = true,
         },
         formatters_by_ft = {
-          dart = { "dart format" }
+          dart = { "dart format" },
+          python = { "black %" }
         }
       })
+    end
+  },
+  {
+    'tpope/vim-fugitive'
+  },
+  {
+    'mbbill/undotree'
+  },
+  {
+    "folke/flash.nvim",
+    event = "VeryLazy",
+    ---@type Flash.Config
+    opts = {},
+    -- stylua: ignore
+    keys = {
+      { "s",     mode = { "n", "x", "o" }, function() require("flash").jump() end,              desc = "Flash" },
+      { "S",     mode = { "n", "x", "o" }, function() require("flash").treesitter() end,        desc = "Flash Treesitter" },
+      { "r",     mode = "o",               function() require("flash").remote() end,            desc = "Remote Flash" },
+      { "R",     mode = { "o", "x" },      function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+      { "<c-s>", mode = { "c" },           function() require("flash").toggle() end,            desc = "Toggle Flash Search" },
+    },
+    config = function()
+      vim.api.nvim_set_hl(0, 'FlashLabel', { fg = '#FFFFFF' })
+    end
+  },
+  {
+    "Exafunction/codeium.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "hrsh7th/nvim-cmp",
+    },
+    config = function()
+      require("codeium").setup()
+    end
+  },
+  {
+    'norcalli/nvim-colorizer.lua',
+    config = function()
+      require 'colorizer'.setup()
     end
   },
   {
@@ -361,13 +508,8 @@ require("lazy").setup({
   --     vim.cmd("colorscheme rose-pine") -- this applies the theme
   --   end
   -- },
-  {
-    "nyoom-engineering/oxocarbon.nvim"
-    -- Add in any other configuration;
-    --   event = foo,
-    --   config = bar
-    --   end,
-  },
+  { "catppuccin/nvim",                 name = "catppuccin", priority = 1000, },
+  { "nyoom-engineering/oxocarbon.nvim" },
   -- {
   --   'olivercederborg/poimandres.nvim',
   --   lazy = false,
@@ -462,16 +604,31 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end
 })
 
---- Make background transparent
--- vim.cmd [[
---     hi Normal guibg=NONE ctermbg=NONE
---     hi CursorLine guibg=NONE ctermbg=NONE
---     hi Pmenu guibg=NONE ctermbg=NONE
---     hi PmenuSel guibg=NONE ctermbg=NONE
---     hi PmenuSbar guibg=NONE ctermbg=NONE
---     hi NormalFloat guibg=NONE ctermbg=NONE
---     hi NormalNC guibg=NONE ctermbg=NONE
--- ]]
+vim.api.nvim_create_autocmd("BufWritePost", {
+  callback = function()
+    local filetype = vim.bo.filetype
+    if filetype == "python" then
+      vim.cmd("silent !black %")
+    else
+      return
+    end
+  end
+})
+
+
+require("telescope").load_extension("flutter")
+
 --
-vim.opt.background = "dark" -- set this to dark or light
-vim.cmd.colorscheme "oxocarbon"
+vim.opt.background = "dark"            -- set this to dark or light
+vim.cmd.colorscheme "catppuccin-mocha" --"oxocarbon"
+--
+-- Make background transparent
+vim.cmd [[
+    hi Normal guibg=NONE ctermbg=NONE
+    hi CursorLine guibg=NONE ctermbg=NONE
+    hi Pmenu guibg=NONE ctermbg=NONE
+    hi PmenuSel guibg=NONE ctermbg=NONE
+    hi PmenuSbar guibg=NONE ctermbg=NONE
+    hi NormalFloat guibg=NONE ctermbg=NONE
+    hi NormalNC guibg=NONE ctermbg=NONE
+]]
