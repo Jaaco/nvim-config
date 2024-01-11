@@ -1,10 +1,22 @@
-vim.cmd('colorscheme habamax')
+-- vim.cmd('colorscheme habamax')
 
 --[[
 For later:
 code-runner
 friendly snippit
 ]]
+
+-- remeber:
+-- TSInstall dart ec
+
+-- TODO
+-- PERF
+-- HACK
+-- NOTE
+-- FIX
+-- WARNING
+
+
 
 -- Error theme:
 --0=========================================================================0
@@ -30,7 +42,7 @@ vim.opt.listchars = { tab = "   ", leadmultispace = '│   ' }
 
 vim.o.cursorline = true
 vim.o.expandtab = true
-vim.o.lazyredraw = true
+-- vim.o.lazyredraw = true
 vim.o.mouse = 'a'
 vim.o.ruler = true
 vim.o.showcmd = true
@@ -66,7 +78,6 @@ vim.o.signcolumn = 'yes'
 -- █▀▄ ██▄ █░▀░█ █▀█ █▀▀ ▄█
 --0=========================================================================0
 
-
 --
 -- jacob added
 --
@@ -93,10 +104,11 @@ rm('n', '<F5>', '<Cmd>UndotreeToggle<CR>')
 -- LSP
 vim.keymap.set('n', 'gD', vim.lsp.buf.declaration)
 vim.keymap.set('n', 'gd', vim.lsp.buf.definition)
--- vim.keymap.set('n', 'K', vim.lsp.buf.hover)
-rm('n', 'K', vim.lsp.buf.hover)
+-- rm('n', 'K', vim.lsp.buf.hover)
 vim.keymap.set('n', 'gi', vim.lsp.buf.implementation)
 vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help)
+
+-- vim.
 
 rm('n', '<leader>.', vim.lsp.buf.code_action, { desc = "Code Action" })
 
@@ -110,17 +122,21 @@ rm("n", "<leader>rn", vim.lsp.buf.rename, { desc = "[R]e[n]ame" })
 rm('n', '<leader>gd', vim.lsp.buf.definition, { desc = "[G]oto [D]efinition" })
 rm('n', '<leader>ga', vim.lsp.buf.code_action, { desc = "[G]oto [A]ction" })
 rm('n', '<leader>sdd', vim.diagnostic.setloclist, { desc = "[S]earch [D]iagnostics" })
+rm('n', '<leader>sd', "<Cmd>Telescope diagnostics severity_bound=ERROR <CR>", { desc = '[S]earch [D]iagnostics' })
 -- rm('n', '<leader>sd', "<Cmd>Telescope diagnostics <CR>", { desc = '[S]earch [D]iagnostics' })
 -- rm('n', '<leader>sd', "<Cmd>Telescope diagnostics severity_bound=ERROR <CR>", { desc = '[S]earch [D]iagnostics' })
-rm('n', '<leader>sd', "<Cmd>Telescope diagnostics severity_bound=ERROR <CR>", { desc = '[S]earch [D]iagnostics' })
 
+
+-- Telescope
+rm('n', '<leader>gr', '<CMD>Telescope lsp_references<CR>', { desc = "[G]oto [R]eferences" })
 
 -- S&R -> replace word under cursor across file
 -- rm('n', '<leader>s', [[:%s/<C-r><C-w>//gc<Left><Left><Left>]])
+--
 -- S&R -> replace selected phrase across file
-rm('v', '<leader>s', [[y:%s/<C-r>"//gc<Left><Left><Left>]])
+-- rm('v', '<leader>s', [[y:%s/<C-r>"//gc<Left><Left><Left>]])
 -- S&R -> select text, press and write what to search for and replace
-rm('v', '<leader>sr', [[:s///gI<Left><Left><Left><Left>]])
+-- rm('v', '<leader>sr', [[:s///gI<Left><Left><Left><Left>]])
 --
 -- /jacob added
 --
@@ -240,9 +256,9 @@ require("lazy").setup({
           layout_config = {
             horizontal = {
               prompt_position = 'top',
-              preview_width = 0.5,
-              results_width = 0.5,
-              height = 0.5,
+              preview_width = 0.4,
+              results_width = 0.6,
+              height = 0.7,
               preview_cutoff = 120,
             }
           },
@@ -274,18 +290,19 @@ require("lazy").setup({
   --0=============================================================================================0
   {
     'nvim-treesitter/nvim-treesitter',
-    build = ":TSUpdate",
+    -- build = ":TSUpdate",
     config = function()
       -- ENABLES THIS IF USING WINDOWS:
       -- require('nvim-treesitter.install').compilers = { 'zig' }
       require('nvim-treesitter.configs').setup {
-        ensure_installed = { 'c', 'lua', 'vim', 'vimdoc', 'query' },
+        ensure_installed = { 'c', 'lua', 'vim', 'vimdoc', 'query', 'dart', 'go', 'markdown', 'markdown_inline' },
         -- Install parsers synchronously (only applied to `ensure_installed`)
         sync_install = false,
         -- Automatically install missing parsers when entering buffer
         auto_install = false,
         highlight = {
           enable = true,
+          disable = { "markdown" },
         },
       }
     end
@@ -318,7 +335,11 @@ require("lazy").setup({
   {
     'williamboman/mason.nvim',
     config = function()
-      require('mason').setup()
+      require('mason').setup({
+        ensure_installed = {
+          "gopls", -- and any other servers you want to install automatically
+        },
+      })
     end
   },
   --0=============================================================================================0
@@ -331,13 +352,78 @@ require("lazy").setup({
       local lspconfig = require('lspconfig')
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
-      local custom_attach = function(client, bufnr)
+      local custom_attach = function(_, _)
         print('Lsp Attached.')
       end
-      --0=============================================================================================0
-      -- █░░ █░█ ▄▀█
-      -- █▄▄ █▄█ █▀█
-      --0=============================================================================================0
+
+      local util = require("lspconfig/util")
+
+      -- rounded borders for hover
+      vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+        border = "rounded",
+      })
+
+
+      -- noice
+      require("noice").setup({
+        lsp = {
+
+          hover = {
+            enabled = true,
+            border = {
+              style = "rounded",
+              padding = { 0, 2 },
+            },
+
+          },
+          override = {
+            -- override the default lsp markdown formatter with Noice
+            ["vim.lsp.util.convert_input_to_markdown_lines"] = false,
+            -- override the lsp markdown formatter with Noice
+            ["vim.lsp.util.stylize_markdown"] = false,
+            -- override cmp documentation with Noice (needs the other options to work)
+          },
+
+          -- defaults for hover and signature help
+          documentation = {
+            view = "hover",
+            opts = {
+              ["cmp.entry.get_documentation"] = false,
+              lang = "markdown",
+              replace = false,
+              render = "plain",
+              format = { "{message}" },
+              win_options = { concealcursor = "n", conceallevel = 3 },
+              border = {
+                style = "rounded",
+                padding = { 0, 2 },
+              },
+            },
+          },
+        },
+
+        -- you can enable a preset for easier configuration
+        presets = {
+          bottom_search = true,         -- use a classic bottom cmdline for search
+          command_palette = true,       -- position the cmdline and popupmenu together
+          long_message_to_split = true, -- long messages will be sent to a split
+          inc_rename = false,           -- enables an input dialog for inc-rename.nvim
+          lsp_doc_border = true,        -- add a border to hover docs and signature help
+          -- lsp_doc_border = {
+          --   views = {
+          --     hover = {
+          --       border = {
+          --         style = "rounded",
+          --       },
+          --       position = { row = 2, col = 2 },
+          --     },
+          --   },
+          -- }
+
+        }
+      })
+
+      -- LUA
       lspconfig.lua_ls.setup({
         on_attach = custom_attach,
         capabilities = capabilities,
@@ -360,6 +446,8 @@ require("lazy").setup({
           },
         },
       })
+
+      -- PYTHON
       lspconfig.jedi_language_server.setup({
         -- on_attach = custom_attach,
         -- capabilities = capabilities,
@@ -370,10 +458,22 @@ require("lazy").setup({
         -- },
       })
 
-      --0=============================================================================================0
-      -- █▀▄ ▄▀█ █▀█ ▀█▀
-      -- █▄▀ █▀█ █▀▄  █
-      --0=============================================================================================0
+      -- GO
+      lspconfig.gopls.setup {
+        on_attach    = custom_attach,
+        capabilities = capabilities,
+        cmd          = { "gopls" },
+        filetypes    = { "go", "gomd", "gowork", "gotmpl" },
+        settings     = {
+          completeUnimported = true,
+          usePlaceholders = true,
+          analyses = {
+            unusedparams = true,
+          },
+        },
+        root_dir     = util.root_pattern("go.work", "go.mod", ".git")
+      }
+
       -- DO NOT SETUP dartls manually when using akinsho/flutter-tools.nvim
       -- lspconfig.dartls.setup{}
 
@@ -417,12 +517,12 @@ require("lazy").setup({
       })
     end,
   },
-  {
-    "iamcco/markdown-preview.nvim",
-    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
-    ft = { "markdown" },
-    build = function() vim.fn["mkdp#util#install"]() end,
-  },
+  -- {
+  --   "iamcco/markdown-preview.nvim",
+  --   cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+  --   ft = { "markdown" },
+  --   build = function() vim.fn["mkdp#util#install"]() end,
+  -- },
   {
     "folke/which-key.nvim",
     event = "VeryLazy",
@@ -431,9 +531,15 @@ require("lazy").setup({
       vim.o.timeoutlen = 300
     end,
     opts = {
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
+      mode = "n", -- NORMAL mode
+      -- prefix: use "<leader>f" for example for mapping everything related to finding files
+      -- the prefix is prepended to every mapping part of `mappings`
+      prefix = "",
+      buffer = nil,   -- Global mappings. Specify a buffer number for buffer local mappings
+      silent = true,  -- use `silent` when creating keymaps
+      noremap = true, -- use `noremap` when creating keymaps
+      nowait = false, -- use `nowait` when creating keymaps
+      expr = false,   -- use `expr` when creating keymaps
     }
   },
   {
@@ -462,7 +568,7 @@ require("lazy").setup({
   {
     "folke/flash.nvim",
     event = "VeryLazy",
-    ---@type Flash.Config
+    -- @type Flash.Config
     opts = {},
     -- stylua: ignore
     keys = {
@@ -508,7 +614,12 @@ require("lazy").setup({
   --     vim.cmd("colorscheme rose-pine") -- this applies the theme
   --   end
   -- },
-  { "catppuccin/nvim",                 name = "catppuccin", priority = 1000, },
+  {
+
+    "catppuccin/nvim",
+    name = "catppuccin",
+    priority = 1000,
+  },
   { "nyoom-engineering/oxocarbon.nvim" },
   -- {
   --   'olivercederborg/poimandres.nvim',
@@ -588,6 +699,76 @@ require("lazy").setup({
       )
     end
   },
+  {
+    'nvimtools/none-ls.nvim',
+    config = function()
+      local null_ls = require("null-ls")
+      local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
+
+      null_ls.setup({
+        sources = {
+          null_ls.builtins.formatting.gofumpt,
+          null_ls.builtins.formatting.goimports_reviser,
+          null_ls.builtins.formatting.golines,
+        },
+        on_attach = function(client, bufnr)
+          if client.supports_method("textDocument/formatting") then
+            vim.api.nvim_clear_autocmds({
+              group = augroup,
+              buffer = bufnr,
+            })
+            vim.api.nvim_create_autocmd("BufWritePre", {
+              group = augroup,
+              buffer = bufnr,
+              callback = function()
+                vim.lsp.buf.format({ bufnr = bufnr })
+              end,
+            })
+          end
+        end,
+      })
+    end,
+
+  },
+  {
+    'folke/noice.nvim',
+    event = "VeryLazy",
+    opts = {
+
+      -- add any options here
+    },
+    dependencies = {
+      -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+      "MunifTanjim/nui.nvim",
+      -- OPTIONAL:
+      --   `nvim-notify` is only needed, if you want to use the notification view.
+      --   If not available, we use `mini` as the fallback
+      "rcarriga/nvim-notify",
+    }
+  },
+  {
+    "ray-x/go.nvim",
+    dependencies = { -- optional packages
+      "ray-x/guihua.lua",
+      "neovim/nvim-lspconfig",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    config = function()
+      require("go").setup()
+    end,
+    event = { "CmdlineEnter" },
+    ft = { "go", 'gomod' },
+    build = ':lua require("go.install").update_all_sync()' -- if you need to install/update all binaries
+  },
+  {
+    'folke/todo-comments.nvim',
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+    }
+  },
 })
 --0=========================================================================0
 -- █▀█ █░░ █░█ █▀▀ █ █▄░█ █▀   █▀▀ █▄░█ █▀▄   █░█ █▀▀ █▀█ █▀▀
@@ -622,6 +803,10 @@ require("telescope").load_extension("flutter")
 vim.opt.background = "dark"            -- set this to dark or light
 vim.cmd.colorscheme "catppuccin-mocha" --"oxocarbon"
 --
+require("notify").setup({
+  background_colour = "#000000",
+})
+
 -- Make background transparent
 vim.cmd [[
     hi Normal guibg=NONE ctermbg=NONE
