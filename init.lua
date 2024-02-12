@@ -1,30 +1,27 @@
--- vim.cmd('colorscheme habamax')
-
 --[[
-For later:
-code-runner
-friendly snippit
-]]
+--
+--For later:
+--code-runner
+--friendly snippit
+--]]
 
 -- remeber:
 -- TSInstall dart ec
 
--- TODO
--- PERF
--- HACK
--- NOTE
--- FIX
--- WARNING
+-- TODO: Noice
+-- PERF: Thank
+-- HACK: You
+-- NOTE: So
+-- FIX: Much
+-- WARNING: Bro
 
 
-
--- Error theme:
 --0=========================================================================0
 -- █▀ █▀▀ ▀█▀ ▀█▀ █ █▄░█ █▀▀ █▀
 -- ▄█ ██▄ ░█░ ░█░ █ █░▀█ █▄█ ▄█
 --0=========================================================================0
-vim.g.mapleader = ' '     -- setting the leader key
-local rm = vim.keymap.set -- just some variables to make the typing a bit less local vim.o = vim.o
+--
+vim.g.mapleader = ' ' -- setting the leader key
 -- terminal tab filename title
 vim.opt.title = true
 vim.opt.titlestring = '%t'
@@ -78,7 +75,9 @@ vim.o.signcolumn = 'yes'
 -- █▀▄ ██▄ █░▀░█ █▀█ █▀▀ ▄█
 --0=========================================================================0
 
---
+local rm = vim.keymap.set -- just some variables to make the typing a bit less local vim.o = vim.o
+
+
 -- jacob added
 --
 
@@ -100,29 +99,33 @@ rm('n', '<leader>fq', '<Cmd>FlutterQuit<CR>', { desc = "[F]lutter [Q]uit" })    
 
 -- Undo Tree
 rm('n', '<F5>', '<Cmd>UndotreeToggle<CR>')
+rm('n', '<leader>ut', '<Cmd>UndotreeToggle<CR>')
 
 -- LSP
-vim.keymap.set('n', 'gD', vim.lsp.buf.declaration)
-vim.keymap.set('n', 'gd', vim.lsp.buf.definition)
--- rm('n', 'K', vim.lsp.buf.hover)
-vim.keymap.set('n', 'gi', vim.lsp.buf.implementation)
-vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help)
+rm('n', 'gD', vim.lsp.buf.declaration)
+rm('n', 'gd', vim.lsp.buf.definition)
+rm('n', 'gi', vim.lsp.buf.implementation)
+rm('n', '<C-k>', vim.lsp.buf.signature_help)
 
--- vim.
+vim.keymap.set('n', '<leader>th', '<CMD>Themery<CR>')
 
 rm('n', '<leader>.', vim.lsp.buf.code_action, { desc = "Code Action" })
 
 -- Renamer
-vim.api.nvim_set_keymap('i', '<F2>', '<cmd>lua require("renamer").rename()<cr>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<leader>rn', '<cmd>lua require("renamer").rename()<cr>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('v', '<leader>rn', '<cmd>lua require("renamer").rename()<cr>', { noremap = true, silent = true })
+-- vim.api.nvim_set_keymap('i', '<F2>', '<cmd>lua require("renamer").rename()<cr>', { noremap = true, silent = true }) -- not doing anything
+rm('n', '<leader>rn', '<cmd>lua require("renamer").rename()<cr>', { noremap = true, silent = true })
+rm('v', '<leader>rn', '<cmd>lua require("renamer").rename()<cr>', { noremap = true, silent = true })
 
 --LSP
 rm("n", "<leader>rn", vim.lsp.buf.rename, { desc = "[R]e[n]ame" })
 rm('n', '<leader>gd', vim.lsp.buf.definition, { desc = "[G]oto [D]efinition" })
 rm('n', '<leader>ga', vim.lsp.buf.code_action, { desc = "[G]oto [A]ction" })
-rm('n', '<leader>sdd', vim.diagnostic.setloclist, { desc = "[S]earch [D]iagnostics" })
+
+-- diagnostics
 rm('n', '<leader>sd', "<Cmd>Telescope diagnostics severity_bound=ERROR <CR>", { desc = '[S]earch [D]iagnostics' })
+rm('n', '<leader>sdd', vim.diagnostic.setloclist, { desc = "[S]earch [D]iagnostics" })
+
+-- was  not using following 2:
 -- rm('n', '<leader>sd', "<Cmd>Telescope diagnostics <CR>", { desc = '[S]earch [D]iagnostics' })
 -- rm('n', '<leader>sd', "<Cmd>Telescope diagnostics severity_bound=ERROR <CR>", { desc = '[S]earch [D]iagnostics' })
 
@@ -130,46 +133,32 @@ rm('n', '<leader>sd', "<Cmd>Telescope diagnostics severity_bound=ERROR <CR>", { 
 -- Telescope
 rm('n', '<leader>gr', '<CMD>Telescope lsp_references<CR>', { desc = "[G]oto [R]eferences" })
 
--- S&R -> replace word under cursor across file
--- rm('n', '<leader>s', [[:%s/<C-r><C-w>//gc<Left><Left><Left>]])
---
--- S&R -> replace selected phrase across file
--- rm('v', '<leader>s', [[y:%s/<C-r>"//gc<Left><Left><Left>]])
--- S&R -> select text, press and write what to search for and replace
--- rm('v', '<leader>sr', [[:s///gI<Left><Left><Left><Left>]])
---
+-- Tmux Vim Navigator
+-- rm('n', '<C-h>', '<Cmd>NvimTmuxNavigateLeft<CR>')
+-- rm('n', '<C-j>', '<Cmd>NvimTmuxNavigateDown<CR>')
+-- rm('n', '<C-k>', '<Cmd>NvimTmuxNavigateUp<CR>')
+-- rm('n', '<C-l>', '<Cmd>NvimTmuxNavigateRight<CR>')
 -- /jacob added
---
 
 
 
--- QOL:
 -- Search centering
 rm('n', 'n', 'nzz')
 rm('n', 'N', 'Nzz')
+
 -- Deleting letters going to vim.oid
 rm('n', 'x', '"_x')
 rm('v', 'x', '"_x')
+
 -- format pasted line.
 rm('n', 'p', 'p==')
 
--- page movement up/down
-rm('n', '<C-k>', '<S-Up>zz')
-rm('n', '<C-j>', '<S-Down>zz')
-rm('v', '<C-k>', '<S-Up>zz')
-rm('v', '<C-j>', '<S-Down>zz')
--- Save file
--- rm('n', '<C-s>', ':w<CR>')
---
--- Move selected lines with alt arrows like in subl
-rm('v', '<A-k>', ":m '<-2<CR>gv=gv")
-rm('v', '<A-j>', ":m '>+1<CR>gv=gv")
-rm('n', '<A-k>', ':m .-2<cr>==')
-rm('n', '<A-j>', ':m .+1<cr>==')
 -- vertical split
-rm('n', '<leader>+', '<Cmd>vsplit<CR>')
+rm('n', '<leader>sv', '<Cmd>vsplit<CR>')
+
 -- horizontal split
-rm('n', '<leader>-', '<Cmd>split<CR>')
+rm('n', '<leader>sh', '<Cmd>split<CR>')
+
 -- Move in splits with hjkl
 rm('n', '<leader>h', '<Cmd>wincmd h<CR>')
 rm('n', '<leader>j', '<Cmd>wincmd j<CR>')
@@ -179,16 +168,20 @@ rm('t', '<leader>h', '<Cmd>wincmd h<CR>')
 rm('t', '<leader>j', '<Cmd>wincmd j<CR>')
 rm('t', '<leader>k', '<Cmd>wincmd k<CR>')
 rm('t', '<leader>l', '<Cmd>wincmd l<CR>')
+
 -- Resize splits
 rm('n', '<S-Left>', '<Cmd>vertical resize -2<CR>')
 rm('n', '<S-Right>', '<Cmd>vertical resize +2<CR>')
 rm('n', '<S-Up>', '<Cmd>resize -2<CR>')
 rm('n', '<S-Down>', '<Cmd>resize +2<CR>')
+
 -- Indent/Unindent selected text with Tab and Shift+Tab
 rm('v', '>', '>gv')
 rm('v', '<', '<gv')
+
 -- Remove search HL
-rm('n', '<leader>h', '<Cmd>nohlsearch<CR>')
+rm('n', '<leader>rs', '<Cmd>nohlsearch<CR>', { desc = '[R]emove [S]earch' })
+
 --0=========================================================================0
 -- █░░ ▄▀█ ▀█ █▄█
 -- █▄▄ █▀█ █▄ ░█░
@@ -210,19 +203,15 @@ vim.opt.rtp:prepend(lazypath) -- Ends here, this should be left alone.
 -- █▀▀ █▄▄ █▄█ █▄█ █ █░▀█ ▄█   ▄█ ░█░ █▀█ █▀▄ ░█░   █▀█ ██▄ █▀▄ ██▄
 --0=========================================================================0
 require("lazy").setup({
-  --{
-  --    "leet0rz/modified-moonlight.nvim", -- this is the theme
-  --    config = function()
-  --        vim.cmd("colorscheme moonlight") -- this applies the theme
-  --    end
-  --},
   {
+    -- pairs "" and () together
     "windwp/nvim-autopairs",
     config = function()
       require("nvim-autopairs").setup()
     end
   },
   {
+    -- comment line or selected blocks using ' as shortcut
     'terrortylor/nvim-comment',
     config = function()
       -- remaps
@@ -248,6 +237,9 @@ require("lazy").setup({
       rm('n', '<leader>fb', builtin.buffers)
       rm('n', '<leader>fh', builtin.help_tags)
       rm('n', '<leader>lr', builtin.lsp_references)
+
+      -- builtin.diagnostics({ severity_sort = true })
+
       -- telescope's setup
       require('telescope').setup {
         defaults = {
@@ -261,6 +253,15 @@ require("lazy").setup({
               height = 0.7,
               preview_cutoff = 120,
             }
+          },
+        },
+        extensions = {
+          fzf = {
+            fuzzy = true,                   -- false will only do exact matching
+            override_generic_sorter = true, -- override the generic sorter
+            override_file_sorter = true,    -- override the file sorter
+            case_mode = "smart_case",       -- or "ignore_case" or "respect_case"
+            -- the default case_mode is "smart_case"
           },
         },
       }
@@ -333,6 +334,7 @@ require("lazy").setup({
   -- █░▀░█ █▀█ ▄█ █▄█ █░▀█
   --0=============================================================================================0
   {
+    -- for installing LSPs etc
     'williamboman/mason.nvim',
     config = function()
       require('mason').setup({
@@ -364,64 +366,6 @@ require("lazy").setup({
       })
 
 
-      -- noice
-      require("noice").setup({
-        lsp = {
-
-          hover = {
-            enabled = true,
-            border = {
-              style = "rounded",
-              padding = { 0, 2 },
-            },
-
-          },
-          override = {
-            -- override the default lsp markdown formatter with Noice
-            ["vim.lsp.util.convert_input_to_markdown_lines"] = false,
-            -- override the lsp markdown formatter with Noice
-            ["vim.lsp.util.stylize_markdown"] = false,
-            -- override cmp documentation with Noice (needs the other options to work)
-          },
-
-          -- defaults for hover and signature help
-          documentation = {
-            view = "hover",
-            opts = {
-              ["cmp.entry.get_documentation"] = false,
-              lang = "markdown",
-              replace = false,
-              render = "plain",
-              format = { "{message}" },
-              win_options = { concealcursor = "n", conceallevel = 3 },
-              border = {
-                style = "rounded",
-                padding = { 0, 2 },
-              },
-            },
-          },
-        },
-
-        -- you can enable a preset for easier configuration
-        presets = {
-          bottom_search = true,         -- use a classic bottom cmdline for search
-          command_palette = true,       -- position the cmdline and popupmenu together
-          long_message_to_split = true, -- long messages will be sent to a split
-          inc_rename = false,           -- enables an input dialog for inc-rename.nvim
-          lsp_doc_border = true,        -- add a border to hover docs and signature help
-          -- lsp_doc_border = {
-          --   views = {
-          --     hover = {
-          --       border = {
-          --         style = "rounded",
-          --       },
-          --       position = { row = 2, col = 2 },
-          --     },
-          --   },
-          -- }
-
-        }
-      })
 
       -- LUA
       lspconfig.lua_ls.setup({
@@ -473,56 +417,19 @@ require("lazy").setup({
         },
         root_dir     = util.root_pattern("go.work", "go.mod", ".git")
       }
-
-      -- DO NOT SETUP dartls manually when using akinsho/flutter-tools.nvim
-      -- lspconfig.dartls.setup{}
-
-      -- new server goes here:
-      -- lspconfig.SERVER.setup({
-      --    on_attach = custom_attach,
-      --    capabilities = capabilities
-      --    COPY PASTE SERVER SETTINGS HERE
-      --})
     end
   },
   {
+    -- Rename with small pop up
     'filipdutescu/renamer.nvim',
   },
   {
     -- Colored Parentheses
     'HiPhish/rainbow-delimiters.nvim',
     config = function()
-      require('rainbow-delimiters.setup').setup({
-        strategy = {
-          -- [''] = rainbow_delimiters.strategy['global'],
-          -- vim = rainbow_delimiters.strategy['local'],
-        },
-        query = {
-          [''] = 'rainbow-delimiters',
-          lua = 'rainbow-blocks',
-        },
-        priority = {
-          [''] = 110,
-          lua = 210,
-        },
-        highlight = {
-          'RainbowDelimiterRed',
-          'RainbowDelimiterYellow',
-          'RainbowDelimiterBlue',
-          'RainbowDelimiterOrange',
-          'RainbowDelimiterGreen',
-          'RainbowDelimiterViolet',
-          'RainbowDelimiterCyan',
-        },
-      })
+      require('rainbow-delimiters.setup').setup()
     end,
   },
-  -- {
-  --   "iamcco/markdown-preview.nvim",
-  --   cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
-  --   ft = { "markdown" },
-  --   build = function() vim.fn["mkdp#util#install"]() end,
-  -- },
   {
     "folke/which-key.nvim",
     event = "VeryLazy",
@@ -531,24 +438,22 @@ require("lazy").setup({
       vim.o.timeoutlen = 300
     end,
     opts = {
-      mode = "n", -- NORMAL mode
-      -- prefix: use "<leader>f" for example for mapping everything related to finding files
-      -- the prefix is prepended to every mapping part of `mappings`
+      mode = "n",     -- NORMAL mode
       prefix = "",
       buffer = nil,   -- Global mappings. Specify a buffer number for buffer local mappings
       silent = true,  -- use `silent` when creating keymaps
       noremap = true, -- use `noremap` when creating keymaps
       nowait = false, -- use `nowait` when creating keymaps
       expr = false,   -- use `expr` when creating keymaps
-    }
+    },
   },
   {
+    -- file formatting
     'stevearc/conform.nvim',
     opts = {},
     config = function()
       require("conform").setup({
         format_on_save = {
-          -- These options will be passed to conform.format()
           timeout_ms = 500,
           lsp_fallback = true,
         },
@@ -560,12 +465,11 @@ require("lazy").setup({
     end
   },
   {
-    'tpope/vim-fugitive'
-  },
-  {
+    -- shows a history of changes
     'mbbill/undotree'
   },
   {
+    -- rapid navigation within file
     "folke/flash.nvim",
     event = "VeryLazy",
     -- @type Flash.Config
@@ -583,6 +487,7 @@ require("lazy").setup({
     end
   },
   {
+    -- AI autocompletions
     "Exafunction/codeium.nvim",
     dependencies = {
       "nvim-lua/plenary.nvim",
@@ -593,6 +498,7 @@ require("lazy").setup({
     end
   },
   {
+    -- Shows colors of hex codes #8080ff
     'norcalli/nvim-colorizer.lua',
     config = function()
       require 'colorizer'.setup()
@@ -606,55 +512,54 @@ require("lazy").setup({
       'stevearc/dressing.nvim', -- optional for vim.ui.select
     },
     config = true,
+    -- DO NOT SETUP dartls manually when using akinsho/flutter-tools.nvim
   },
-  -- {
-  --   'rose-pine/neovim',
-  --   name = 'rose-pine',
-  --   config = function()
-  --     vim.cmd("colorscheme rose-pine") -- this applies the theme
-  --   end
-  -- },
+  -- themes:
   {
-
     "catppuccin/nvim",
     name = "catppuccin",
-    priority = 1000,
+    -- priority = 1000,
+    config = function()
+      vim.cmd("colorscheme catppuccin") -- this applies the theme
+    end
   },
-  { "nyoom-engineering/oxocarbon.nvim" },
-  -- {
-  --   'olivercederborg/poimandres.nvim',
-  --   lazy = false,
-  --   priority = 1000,
-  --   config = function()
-  --     require('poimandres').setup {
-  --       -- leave this setup function empty for default config
-  --       -- or refer to the configuration section
-  --       -- for configuration options
-  --     }
-  --   end,
-  --
-  --   -- optionally set the colorscheme within lazy config
-  --   init = function()
-  --     vim.cmd("colorscheme poimandres")
-  --   end
-  -- },
-  -- {
-  --   'AlexvZyl/nordic.nvim',
-  --   lazy = false,
-  --   priority = 1000,
-  --   config = function()
-  --     require 'nordic'.load()
-  --   end
-  -- },
+  {
+    'rose-pine/neovim',
+    name = 'rose-pine',
+  },
+  {
+    'shaunsingh/moonlight.nvim',
+    name = 'moonlight',
+  },
+  {
+    "nyoom-engineering/oxocarbon.nvim",
+    name = 'oxocarbon',
+  },
+  {
+    'olivercederborg/poimandres.nvim',
+  },
+  {
+    'AlexvZyl/nordic.nvim',
+  },
+  {
+    'zaldih/themery.nvim',
+    config = function()
+      require("themery").setup({
+        themes = { 'catppuccin', 'rose-pine', 'moonlight', 'oxocarbon', 'poimandres', 'nordic', }, -- Your list of installed colorschemes
+        themeConfigFile = "~/.config/jvim/lua/settings/theme.lua",                                 -- Described below
+        livePreview = true,                                                                        -- Apply theme while browsing. Default to true.
+      })
+    end
+  },
   {
     'nvim-telescope/telescope-fzf-native.nvim',
     build =
     'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build'
   },
-  --0=============================================================================================0
-  -- █▀▀ █▀▄▀█ █▀█
-  -- █▄▄ █░▀░█ █▀▀
-  --0=============================================================================================0
+  -- --0=============================================================================================0
+  -- -- █▀▀ █▀▄▀█ █▀█
+  -- -- █▄▄ █░▀░█ █▀▀
+  -- --0=============================================================================================0
   {
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
@@ -728,23 +633,14 @@ require("lazy").setup({
         end,
       })
     end,
-
   },
+  -- {
+  --   -- part of noice.nvim, maybe can be used to recreate  command line pop up?
+  --   'MunifTanjim/nui.nvim',
+  -- },
   {
-    'folke/noice.nvim',
-    event = "VeryLazy",
-    opts = {
-
-      -- add any options here
-    },
-    dependencies = {
-      -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-      "MunifTanjim/nui.nvim",
-      -- OPTIONAL:
-      --   `nvim-notify` is only needed, if you want to use the notification view.
-      --   If not available, we use `mini` as the fallback
-      "rcarriga/nvim-notify",
-    }
+    -- notifications as seen  in noice.nvim
+    'rcarriga/nvim-notify',
   },
   {
     "ray-x/go.nvim",
@@ -764,11 +660,43 @@ require("lazy").setup({
     'folke/todo-comments.nvim',
     dependencies = { "nvim-lua/plenary.nvim" },
     opts = {
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
     }
   },
+  {
+    'alexghergh/nvim-tmux-navigation',
+    config = function()
+      local nvim_tmux_nav = require('nvim-tmux-navigation')
+
+      nvim_tmux_nav.setup {
+        -- disable_when_zoomed = true     -- defaults to false
+        keybindings = {
+          left = "<C-h>",
+          down = "<C-j>",
+          up = "<C-k>",
+          right = "<C-l>",
+          -- last_active = "<C-\\>",
+          -- next = "<C-Space>",
+        },
+      }
+    end
+  },
+  -- {
+  --   "christoomey/vim-tmux-navigator",
+  --   cmd = {
+  --     "TmuxNavigateLeft",
+  --     "TmuxNavigateDown",
+  --     "TmuxNavigateUp",
+  --     "TmuxNavigateRight",
+  --     "TmuxNavigatePrevious",
+  --   },
+  --   keys = {
+  --     { "<c-h>",  "<cmd><C-U>TmuxNavigateLeft<cr>" },
+  --     { "<c-j>",  "<cmd><C-U>TmuxNavigateDown<cr>" },
+  --     { "<c-k>",  "<cmd><C-U>TmuxNavigateUp<cr>" },
+  --     { "<c-l>",  "<cmd><C-U>TmuxNavigateRight<cr>" },
+  --     { "<c-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
+  --   },
+  -- },
 })
 --0=========================================================================0
 -- █▀█ █░░ █░█ █▀▀ █ █▄░█ █▀   █▀▀ █▄░█ █▀▄   █░█ █▀▀ █▀█ █▀▀
@@ -778,6 +706,7 @@ require("lazy").setup({
 -- ▄▀█ █░█ ▀█▀ █▀█ █▀▀ █▀▄▀█ █▀▄
 -- █▀█ █▄█ ░█░ █▄█ █▄▄ █░▀░█ █▄▀
 --0=========================================================================0
+--
 -- Highlight yanked text for 150ms
 vim.api.nvim_create_autocmd('TextYankPost', {
   callback = function()
@@ -785,35 +714,28 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end
 })
 
-vim.api.nvim_create_autocmd("BufWritePost", {
-  callback = function()
-    local filetype = vim.bo.filetype
-    if filetype == "python" then
-      vim.cmd("silent !black %")
-    else
-      return
-    end
-  end
-})
 
 
 require("telescope").load_extension("flutter")
+require('telescope').load_extension('fzf')
 
---
-vim.opt.background = "dark"            -- set this to dark or light
-vim.cmd.colorscheme "catppuccin-mocha" --"oxocarbon"
---
-require("notify").setup({
-  background_colour = "#000000",
-})
+-- vim.opt.background = "dark" -- set this to dark or light
+-- vim.cmd.colorscheme = 'x' --catppuccin' --'moonlight'  "oxocarbon"
 
--- Make background transparent
-vim.cmd [[
-    hi Normal guibg=NONE ctermbg=NONE
-    hi CursorLine guibg=NONE ctermbg=NONE
-    hi Pmenu guibg=NONE ctermbg=NONE
-    hi PmenuSel guibg=NONE ctermbg=NONE
-    hi PmenuSbar guibg=NONE ctermbg=NONE
-    hi NormalFloat guibg=NONE ctermbg=NONE
-    hi NormalNC guibg=NONE ctermbg=NONE
-]]
+-- require("notify").setup({
+--   background_colour = "#000000",
+-- })
+
+-- Make
+-- background
+-- transparent
+-- vim.cmd [[
+--     hi Normal guibg=NONE ctermbg=NONE
+--     hi CursorLine guibg=NONE ctermbg=NONE
+--     hi Pmenu guibg=NONE ctermbg=NONE
+--     hi PmenuSel guibg=NONE ctermbg=NONE
+--     hi PmenuSbar guibg=NONE ctermbg=NONE
+--     hi NormalFloat guibg=NONE ctermbg=NONE
+--     hi NormalNC guibg=NONE ctermbg=NONE
+-- ]]
+
