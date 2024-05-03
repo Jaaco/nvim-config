@@ -17,3 +17,9 @@ For NVIM:
 [rose-pine](https://github.com/rose-pine/neovim)
 [conform]
 [which key]
+
+
+TMUX:
+download / install `tpm`.
+source plugins in tmux with:
+TMUX-LEADER (ctrl + b or ctrl + space) and then I (capital I, shift + i)
