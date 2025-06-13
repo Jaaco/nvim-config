@@ -1,88 +1,14 @@
---[[
---
---For later:
---code-runner
---friendly snippit
---]]
+require("jaaco.remap")
+require("jaaco.settings")
 
--- remeber:
--- TSInstall dart ec
-
--- TODO: Noice
--- PERF: Thank
--- HACK: You
--- NOTE: So
--- FIX: Much
--- WARNING: Bro
-
-
---0=========================================================================0
--- █▀ █▀▀ ▀█▀ ▀█▀ █ █▄░█ █▀▀ █▀
--- ▄█ ██▄ ░█░ ░█░ █ █░▀█ █▄█ ▄█
---0=========================================================================0
---
-vim.g.mapleader = ' ' -- setting the leader key
--- terminal tab filename title
-vim.opt.title = true
-vim.opt.titlestring = '%t'
-
-vim.opt.autoindent = true
-vim.opt.swapfile = false
-vim.o.number = true
-
--- jacob added
-vim.opt.relativenumber = true
-
--- indent lines
-vim.o.list = true
-vim.opt.listchars = { tab = "   ", leadmultispace = '│   ' }
-
-vim.o.cursorline = true
-vim.o.expandtab = true
--- vim.o.lazyredraw = true
-vim.o.mouse = 'a'
-vim.o.ruler = true
-vim.o.showcmd = true
-vim.o.syntax = 'enable'
-vim.o.timeoutlen = 300
-vim.o.wildmenu = true
-vim.o.wrap = false
-vim.o.completeopt = 'menuone,preview,noselect'
-
--- Faster update time
-vim.o.updatetime = 50
-
--- format
-vim.o.shiftwidth = 2
-vim.o.softtabstop = 2
-vim.o.smarttab = true
-vim.o.tabstop = 2
-
-vim.opt.termguicolors = true
-vim.o.clipboard = 'unnamedplus'
-vim.o.encoding = 'utf-8'
-vim.o.hlsearch = true
-vim.o.ignorecase = true
-vim.o.incsearch = true
-vim.o.showmatch = true
-vim.o.smartcase = true
-vim.o.smartindent = true
-vim.o.scrolloff = 5
-vim.o.signcolumn = 'yes'
-
---0=========================================================================0
--- █▀█ █▀▀ █▀▄▀█ ▄▀█ █▀█ █▀
--- █▀▄ ██▄ █░▀░█ █▀█ █▀▀ ▄█
---0=========================================================================0
+-- vim.api.nvim_set_keymap('n', '<leader>ttt', [[<cmd>lua require'luasnip'.expand_or_jump()<CR>]],
+--   { noremap = true, silent = false })
 
 local rm = vim.keymap.set -- just some variables to make the typing a bit less local vim.o = vim.o
 
-
--- jacob added
---
-
 -- Ctrl S for saving and going to normal mode
 rm('n', "<C-s>", "<Cmd>w!<CR>")
+rm('n', "<leader>s", "<Cmd>w!<CR>")
 rm('i', "<C-s>", "<Cmd>w!|stopinsert<CR>")
 
 -- Center after jumping half pages
@@ -91,11 +17,12 @@ rm('n', '<C-d>', '<C-d>zz')
 
 
 -- Flutter
-rm('n', '<leader>fs', '<Cmd>FlutterRun<CR>', { desc = "[F]lutter [S]tart" })           -- [f]lutter [s]tart
-rm('n', '<leader>fr', '<Cmd>FlutterReload<CR>', { desc = "[F]lutter [R]eload" })       -- [f]lutter [r]eload
-rm('n', '<leader>fR', '<Cmd>FlutterRestart<CR>', { desc = "[F]lutter [R]estart" })     -- [f]lutter [R]restart
-rm('n', '<leader>fe', '<Cmd>FlutterEmulators<CR>', { desc = "[F]lutter [E]mulators" }) -- [f]lutter [e]emulators
-rm('n', '<leader>fq', '<Cmd>FlutterQuit<CR>', { desc = "[F]lutter [Q]uit" })           -- [f]lutter [q]uit
+rm('n', '<leader>fs', '<Cmd>FlutterRun<CR>', { desc = "[F]lutter [S]tart" })
+rm('n', '<leader>fr', '<Cmd>FlutterReload<CR>', { desc = "[F]lutter [R]eload" })
+rm('n', '<leader>fR', '<Cmd>FlutterRestart<CR>', { desc = "[F]lutter [R]estart" })
+rm('n', '<leader>fe', '<Cmd>FlutterEmulators<CR>', { desc = "[F]lutter [E]mulators" })
+rm('n', '<leader>fd', '<Cmd>FlutterDevices<CR>', { desc = "[F]lutter [D]evices" })
+rm('n', '<leader>fq', '<Cmd>FlutterQuit<CR>', { desc = "[F]lutter [Q]uit" })
 
 -- Undo Tree
 rm('n', '<F5>', '<Cmd>UndotreeToggle<CR>')
@@ -106,8 +33,10 @@ rm('n', 'gD', vim.lsp.buf.declaration)
 rm('n', 'gd', vim.lsp.buf.definition)
 rm('n', 'gi', vim.lsp.buf.implementation)
 rm('n', '<C-k>', vim.lsp.buf.signature_help)
+rm('n', '<leader>k', vim.lsp.buf.signature_help)
 
-vim.keymap.set('n', '<leader>th', '<CMD>Themery<CR>')
+
+rm('n', '<leader>th', '<CMD>Themery<CR>')
 
 rm('n', '<leader>.', vim.lsp.buf.code_action, { desc = "Code Action" })
 
@@ -132,6 +61,9 @@ rm('n', '<leader>sdd', vim.diagnostic.setloclist, { desc = "[S]earch [D]iagnosti
 
 -- Telescope
 rm('n', '<leader>gr', '<CMD>Telescope lsp_references<CR>', { desc = "[G]oto [R]eferences" })
+rm('n', 'gr', '<CMD>Telescope lsp_references<CR>', { desc = "[G]oto [R]eferences" })
+rm('n', '<leader>gb', '<CMD>Telescope buffers<CR>', { desc = "[G]oto [B]uffers" })
+rm('n', 'gb', '<CMD>Telescope buffers<CR>', { desc = "[G]oto [B]uffers" })
 
 -- Tmux Vim Navigator
 -- rm('n', '<C-h>', '<Cmd>NvimTmuxNavigateLeft<CR>')
@@ -139,7 +71,11 @@ rm('n', '<leader>gr', '<CMD>Telescope lsp_references<CR>', { desc = "[G]oto [R]e
 -- rm('n', '<C-k>', '<Cmd>NvimTmuxNavigateUp<CR>')
 -- rm('n', '<C-l>', '<Cmd>NvimTmuxNavigateRight<CR>')
 -- /jacob added
+--
 
+-- nvim-tree
+rm('n', '<leader>t', '<CMD>NvimTreeToggle<CR>', { desc = '[T]ree' })
+rm('n', '<leader>sit', '<CMD>NvimTreeFindFile<CR>', { desc = '[S]how [I]n [T]ree' })
 
 
 -- Search centering
@@ -180,8 +116,42 @@ rm('v', '>', '>gv')
 rm('v', '<', '<gv')
 
 -- Remove search HL
-rm('n', '<leader>rs', '<Cmd>nohlsearch<CR>', { desc = '[R]emove [S]earch' })
+rm('n', '<leader>rh', '<Cmd>noh<CR>', { desc = '[R]emove [H]ighlights' })
+--[[
+--
+--For later:
+--code-runner
+--friendly snippit
+--]]
 
+-- remeber:
+-- TSInstall dart ec
+--
+--
+
+-- TODO: Noice
+-- PERF: Thank
+-- HACK: You
+-- NOTE: So
+-- FIX: Much
+-- WARNING: Bro
+
+
+-- disable netrw at the very start of your init.lua
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+-- optionally enable 24-bit colour
+vim.opt.termguicolors = true
+
+
+
+--0=========================================================================0
+-- █▀█ █▀▀ █▀▄▀█ ▄▀█ █▀█ █▀
+-- █▀▄ ██▄ █░▀░█ █▀█ █▀▀ ▄█
+--0=========================================================================0
+
+-- local rm = vim.keymap.set -- just some variables to make the typing a bit less local vim.o = vim.o
 --0=========================================================================0
 -- █░░ ▄▀█ ▀█ █▄█
 -- █▄▄ █▀█ █▄ ░█░
@@ -208,7 +178,7 @@ require("lazy").setup({
     "windwp/nvim-autopairs",
     config = function()
       require("nvim-autopairs").setup()
-    end
+    end,
   },
   {
     -- comment line or selected blocks using ' as shortcut
@@ -227,8 +197,8 @@ require("lazy").setup({
   --0=============================================================================================0
   {
     'nvim-telescope/telescope.nvim',
-    tag = '0.1.4',
-    dependencies = { 'nvim-lua/plenary.nvim' },
+    -- tag = '0.1.8',
+    dependencies = { 'nvim-lua/plenary.nvim', 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
     config = function()
       -- remaps
       local builtin = require('telescope.builtin')
@@ -266,6 +236,7 @@ require("lazy").setup({
         },
       }
     end
+
   },
   --0=============================================================================================0
   -- █▀█ █ █░░
@@ -294,9 +265,16 @@ require("lazy").setup({
     -- build = ":TSUpdate",
     config = function()
       -- ENABLES THIS IF USING WINDOWS:
+      -- -- Set filetype to 'ruby' for files named 'FASTFILE'
+      vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+        pattern = "FASTFILE",
+        callback = function()
+          vim.bo.filetype = "ruby"
+        end,
+      })
       -- require('nvim-treesitter.install').compilers = { 'zig' }
       require('nvim-treesitter.configs').setup {
-        ensure_installed = { 'c', 'lua', 'vim', 'vimdoc', 'query', 'dart', 'go', 'markdown', 'markdown_inline' },
+        ensure_installed = { 'c', 'lua', 'vim', 'vimdoc', 'query', 'dart', 'go', 'markdown', 'markdown_inline', 'ruby' },
         -- Install parsers synchronously (only applied to `ensure_installed`)
         sync_install = false,
         -- Automatically install missing parsers when entering buffer
@@ -317,13 +295,18 @@ require("lazy").setup({
     config = function()
       vim.o.showmode = false
       require('lualine').setup({
+
         options = {
-          icons_enabled = true,
+          theme = "catppuccin",
           -- theme = 'dracula',
         },
         -- this part shows full path, helps navigate in Oil.
         sections = {
-          lualine_c = { { 'filename', path = 2 } }
+          lualine_b = { 'diagnostics' },
+          lualine_c = { 'buffers' },
+          lualine_x = { 'branch', 'diff' },
+          lualine_y = {},
+          lualine_z = { { 'filename', path = 1 } }
         }
       })
     end
@@ -339,11 +322,27 @@ require("lazy").setup({
     config = function()
       require('mason').setup({
         ensure_installed = {
-          "gopls", -- and any other servers you want to install automatically
+          -- hiding go for now
+          -- "gopls", -- and any other servers you want to install automatically
+          "typescript-language-server",
+          "prettier",
         },
       })
     end
   },
+  -- {
+  --   -- for installing LSPs etc
+  --   'williamboman/mason-lspconfig.nvim',
+  --   config = function()
+  --     require('mason-lspconfig').setup({
+  --       ensure_installed = {
+  --         "ts_ls",
+  --         -- "tsserver"
+  --       }
+  --     })
+  --   end
+  -- },
+
   --0=============================================================================================0
   -- █░░ █▀ █▀█
   -- █▄▄ ▄█ █▀▀
@@ -353,7 +352,7 @@ require("lazy").setup({
     config = function()
       local lspconfig = require('lspconfig')
       local capabilities = vim.lsp.protocol.make_client_capabilities()
-      capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+      -- capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
       local custom_attach = function(_, _)
         print('Lsp Attached.')
       end
@@ -364,6 +363,11 @@ require("lazy").setup({
       vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
         border = "rounded",
       })
+      -- lspconfig.tsserver.setup {
+      --   on_attach = custom_attach,
+      --   filetypes = { "typescript", "typescriptreact", "typescript.tsx" },
+      --   cmd = { "typescript-language-server", "--stdio" }
+      -- }
 
 
 
@@ -401,6 +405,7 @@ require("lazy").setup({
         --   },
         -- },
       })
+
 
       -- GO
       lspconfig.gopls.setup {
@@ -486,17 +491,17 @@ require("lazy").setup({
       vim.api.nvim_set_hl(0, 'FlashLabel', { fg = '#FFFFFF' })
     end
   },
-  {
-    -- AI autocompletions
-    "Exafunction/codeium.nvim",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "hrsh7th/nvim-cmp",
-    },
-    config = function()
-      require("codeium").setup()
-    end
-  },
+  -- {
+  --   -- AI autocompletions
+  --   "Exafunction/codeium.nvim",
+  --   dependencies = {
+  --     "nvim-lua/plenary.nvim",
+  --     "hrsh7th/nvim-cmp",
+  --   },
+  --   config = function()
+  --     require("codeium").setup()
+  --   end
+  -- },
   {
     -- Shows colors of hex codes #8080ff
     'norcalli/nvim-colorizer.lua',
@@ -504,23 +509,42 @@ require("lazy").setup({
       require 'colorizer'.setup()
     end
   },
-  {
-    'akinsho/flutter-tools.nvim',
-    lazy = false,
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'stevearc/dressing.nvim', -- optional for vim.ui.select
-    },
-    config = true,
-    -- DO NOT SETUP dartls manually when using akinsho/flutter-tools.nvim
-  },
+  -- {
+  --   'akinsho/flutter-tools.nvim',
+  --   lazy = false,
+  --   dependencies = {
+  --     'nvim-lua/plenary.nvim',
+  --     'stevearc/dressing.nvim', -- optional for vim.ui.select
+  --   },
+  --   config = function()
+  --     require("flutter-tools").setup {
+  --       --     settings = {
+  --       --       enableSnippets = true,
+  --       --     },
+  --     }
+  --   end,
+
+  --   -- DO NOT SETUP dartls manually when using akinsho/flutter-tools.nvim
+  -- },
+  -- {
+  --   "zbirenbaum/copilot.lua",
+  --   cmd = "Copilot",
+  --   event = "InsertEnter",
+  --   config = function()
+  --     require("copilot").setup({
+  --       panel = {
+  --         open = "<C-CR>",
+  --       },
+  --     })
+  --   end,
+  -- },
   -- themes:
   {
     "catppuccin/nvim",
     name = "catppuccin",
     -- priority = 1000,
     config = function()
-      vim.cmd("colorscheme catppuccin") -- this applies the theme
+      vim.cmd("colorscheme catppuccin-macchiato") -- this applies the theme
     end
   },
   {
@@ -546,94 +570,109 @@ require("lazy").setup({
     config = function()
       require("themery").setup({
         themes = { 'catppuccin', 'rose-pine', 'moonlight', 'oxocarbon', 'poimandres', 'nordic', }, -- Your list of installed colorschemes
-        themeConfigFile = "~/.config/jvim/lua/settings/theme.lua",                                 -- Described below
+        -- themeConfigFile = "~/.config/jvim/lua/settings/theme.lua",                                 -- Described below
         livePreview = true,                                                                        -- Apply theme while browsing. Default to true.
       })
     end
   },
   {
     'nvim-telescope/telescope-fzf-native.nvim',
-    build =
-    'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build'
+    build = 'make'
   },
+  { "rafamadriz/friendly-snippets"
+  },
+  -- {
+  --   "L3MON4D3/LuaSnip",
+  --   lazy = false,
+  --   build = "make install_jsregexp",
+  --   dependencies = { "rafamadriz/friendly-snippets" },
+  --   config = function()
+  --     -- load snippets paths
+  --     require("luasnip.loaders.from_vscode").lazy_load({
+  --       paths = { "./snippets/flutter-riverpod-snippets" },
+  --     })
+  --   end,
+  -- },
   -- --0=============================================================================================0
   -- -- █▀▀ █▀▄▀█ █▀█
   -- -- █▄▄ █░▀░█ █▀▀
   -- --0=============================================================================================0
-  {
-    'hrsh7th/nvim-cmp',
-    event = 'InsertEnter',
-    dependencies = {
-      { 'hrsh7th/cmp-nvim-lsp' },
-      { 'L3MON4D3/LuaSnip' },
-      -- Other:
-      'hrsh7th/cmp-path',
-    },
-    config = function()
-      local cmp = require('cmp')
-      local cmp_ap = require('nvim-autopairs.completion.cmp')
-      local luasnip = require('luasnip')
-      luasnip.config.setup {}
-      cmp.setup({
-        snippet = {
-          expand = function(args)
-            require('luasnip').lsp_expand(args.body)
-          end,
-        },
-        window = {
-          completion = cmp.config.window.bordered(),
-          documentation = cmp.config.window.bordered()
-        },
-        mapping = cmp.mapping.preset.insert({
-          ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-          ['<C-f>'] = cmp.mapping.scroll_docs(4),
-          ['<C-Space>'] = cmp.mapping.complete(),
-          ['<C-e>'] = cmp.mapping.abort(),
-          ['<CR>'] = cmp.mapping.confirm({ select = true }),
-        }),
-        sources = cmp.config.sources({
-          { name = 'nvim_lsp' },
-          { name = 'luasnip' },
-          { name = 'path' },
-        }),
-      })
-      -- bracket completion for lua
-      cmp.event:on(
-        'confirm_done',
-        cmp_ap.on_confirm_done()
-      )
-    end
-  },
-  {
-    'nvimtools/none-ls.nvim',
-    config = function()
-      local null_ls = require("null-ls")
-      local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
+  -- {
+  --   'hrsh7th/nvim-cmp',
+  --   event = 'InsertEnter',
+  --   dependencies = {
+  --     { 'hrsh7th/cmp-nvim-lsp' },
+  --     -- { 'L3MON4D3/LuaSnip' },
+  --     -- Other:
+  --     'hrsh7th/cmp-path',
+  --   },
+  --   config = function()
+  --     local cmp = require('cmp')
+  --     local cmp_ap = require('nvim-autopairs.completion.cmp')
+  --     -- local luasnip = require('luasnip')
+  --     luasnip.config.setup {}
+  --     cmp.setup({
+  --       -- snippet = {
+  --       --   expand = function(args)
+  --       --     require('luasnip').lsp_expand(args.body)
+  --       --   end,
+  --       -- },
+  --       window = {
+  --         completion = cmp.config.window.bordered(),
+  --         documentation = cmp.config.window.bordered()
+  --       },
+  --       mapping = cmp.mapping.preset.insert({
+  --         ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+  --         ['<C-f>'] = cmp.mapping.scroll_docs(4),
+  --         ['<C-Space>'] = cmp.mapping.complete(),
+  --         ['<C-c>'] = cmp.mapping.complete(),
 
-      null_ls.setup({
-        sources = {
-          null_ls.builtins.formatting.gofumpt,
-          null_ls.builtins.formatting.goimports_reviser,
-          null_ls.builtins.formatting.golines,
-        },
-        on_attach = function(client, bufnr)
-          if client.supports_method("textDocument/formatting") then
-            vim.api.nvim_clear_autocmds({
-              group = augroup,
-              buffer = bufnr,
-            })
-            vim.api.nvim_create_autocmd("BufWritePre", {
-              group = augroup,
-              buffer = bufnr,
-              callback = function()
-                vim.lsp.buf.format({ bufnr = bufnr })
-              end,
-            })
-          end
-        end,
-      })
-    end,
-  },
+  --         ['<C-e>'] = cmp.mapping.abort(),
+  --         ['<CR>'] = cmp.mapping.confirm({ select = true }),
+  --       }),
+  --       sources = cmp.config.sources({
+  --         { name = 'nvim_lsp' },
+  --         -- { name = 'luasnip' },
+  --         { name = 'path' },
+  --       }),
+  --     })
+  --     -- bracket completion for lua
+  --     cmp.event:on(
+  --       'confirm_done',
+  --       cmp_ap.on_confirm_done()
+  --     )
+  --   end
+  -- },
+  -- {
+  --   'nvimtools/none-ls.nvim',
+  --   config = function()
+  --     local null_ls = require("null-ls")
+  --     local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
+
+  --     null_ls.setup({
+  --       sources = {
+  --         -- null_ls.builtins.formatting.gofumpt,
+  --         -- null_ls.builtins.formatting.goimports_reviser,
+  --         -- null_ls.builtins.formatting.golines,
+  --       },
+  --       on_attach = function(client, bufnr)
+  --         if client.supports_method("textDocument/formatting") then
+  --           vim.api.nvim_clear_autocmds({
+  --             group = augroup,
+  --             buffer = bufnr,
+  --           })
+  --           vim.api.nvim_create_autocmd("BufWritePre", {
+  --             group = augroup,
+  --             buffer = bufnr,
+  --             callback = function()
+  --               vim.lsp.buf.format({ bufnr = bufnr })
+  --             end,
+  --           })
+  --         end
+  --       end,
+  --     })
+  --   end,
+  -- },
   -- {
   --   -- part of noice.nvim, maybe can be used to recreate  command line pop up?
   --   'MunifTanjim/nui.nvim',
@@ -680,6 +719,36 @@ require("lazy").setup({
       }
     end
   },
+  {
+    "nvim-tree/nvim-tree.lua",
+    version = "*",
+    lazy = false,
+    dependencies = {
+      "nvim-tree/nvim-web-devicons",
+    },
+    config = function()
+      require("nvim-tree").setup {
+        view = {
+          side = 'right',
+          width = 50,
+          float = {
+            -- enable = true
+          }
+        }
+      }
+    end,
+  },
+  {
+    'nvim-tree/nvim-web-devicons'
+  },
+  {
+    "ThePrimeagen/harpoon",
+    branch = "harpoon2",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      require('harpoon').setup {}
+    end,
+  }
   -- {
   --   "christoomey/vim-tmux-navigator",
   --   cmd = {
@@ -707,16 +776,10 @@ require("lazy").setup({
 -- █▀█ █▄█ ░█░ █▄█ █▄▄ █░▀░█ █▄▀
 --0=========================================================================0
 --
--- Highlight yanked text for 150ms
-vim.api.nvim_create_autocmd('TextYankPost', {
-  callback = function()
-    vim.highlight.on_yank()
-  end
-})
 
 
 
-require("telescope").load_extension("flutter")
+-- require("telescope").load_extension("flutter")
 require('telescope').load_extension('fzf')
 
 -- vim.opt.background = "dark" -- set this to dark or light
@@ -739,3 +802,27 @@ require('telescope').load_extension('fzf')
 --     hi NormalNC guibg=NONE ctermbg=NONE
 -- ]]
 
+
+-- vim.opt.termguicolors = false
+
+
+local harpoon = require("harpoon")
+
+-- REQUIRED
+harpoon:setup()
+-- REQUIRED
+
+rm("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+
+rm("n", "<leader>ha", function() harpoon:list():add() end, { desc = '[H]arpoon [A]dd' })
+rm("n", "<leader>hr", function() harpoon:list():remove() end, { desc = '[H]arpoon [R]emove' })
+
+rm("n", "<leader>hp", function() harpoon:list():prev() end, { desc = '[H]arpoon [P]revious' })
+rm("n", "<leader>hn", function() harpoon:list():next() end, { desc = '[H]arpoon [N]ext' })
+
+rm("n", "<leader>1", function() harpoon:list():select(1) end)
+rm("n", "<leader>2", function() harpoon:list():select(2) end)
+rm("n", "<leader>3", function() harpoon:list():select(3) end)
+rm("n", "<leader>4", function() harpoon:list():select(4) end)
+
+-- Toggle previous & next buffers stored within Harpoon list
