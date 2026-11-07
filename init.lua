@@ -1,4 +1,5 @@
-require("jaaco.remap")
+-- require("jaaco.remap")
+require('jaaco.compat')
 require("jaaco.settings")
 
 -- vim.api.nvim_set_keymap('n', '<leader>ttt', [[<cmd>lua require'luasnip'.expand_or_jump()<CR>]],
@@ -34,6 +35,9 @@ rm('n', 'gd', vim.lsp.buf.definition)
 rm('n', 'gi', vim.lsp.buf.implementation)
 rm('n', '<C-k>', vim.lsp.buf.signature_help)
 rm('n', '<leader>k', vim.lsp.buf.signature_help)
+rm('i', '<C-.>', '<C-x><C-o>', { desc = "LSP Completion" })
+rm('i', '<C- >', vim.lsp.buf.completion, { desc = "LSP Completion" })
+rm('n', '<leader>abc', vim.lsp.buf.completion, { desc = "LSP Completion" })
 
 
 rm('n', '<leader>th', '<CMD>Themery<CR>')
@@ -350,29 +354,25 @@ require("lazy").setup({
   {
     'neovim/nvim-lspconfig',
     config = function()
-      local lspconfig = require('lspconfig')
       local capabilities = vim.lsp.protocol.make_client_capabilities()
       -- capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
       local custom_attach = function(_, _)
         print('Lsp Attached.')
       end
 
-      local util = require("lspconfig/util")
-
       -- rounded borders for hover
       vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
         border = "rounded",
       })
-      -- lspconfig.tsserver.setup {
+      -- vim.lsp.config('ts_ls', {
       --   on_attach = custom_attach,
       --   filetypes = { "typescript", "typescriptreact", "typescript.tsx" },
-      --   cmd = { "typescript-language-server", "--stdio" }
-      -- }
+      --   cmd = { "typescript-language-server", "--stdio" },
+      -- })
+      -- vim.lsp.enable('ts_ls')
 
-
-
-      -- LUA
-      lspconfig.lua_ls.setup({
+      -- LUA (see :help lspconfig-nvim-0.11)
+      vim.lsp.config('lua_ls', {
         on_attach = custom_attach,
         capabilities = capabilities,
         settings = {
@@ -394,34 +394,35 @@ require("lazy").setup({
           },
         },
       })
+      vim.lsp.enable('lua_ls')
 
-      -- PYTHON
-      lspconfig.jedi_language_server.setup({
-        -- on_attach = custom_attach,
-        -- capabilities = capabilities,
-        -- init_options = {
-        --   diagnostics = {
-        --     -- enable = false,
-        --   },
-        -- },
-      })
+      -- -- PYTHON
+      -- lspconfig.jedi_language_server.setup({
+      --   -- on_attach = custom_attach,
+      --   -- capabilities = capabilities,
+      --   -- init_options = {
+      --   --   diagnostics = {
+      --   --     -- enable = false,
+      --   --   },
+      --   -- },
+      -- })
 
 
       -- GO
-      lspconfig.gopls.setup {
-        on_attach    = custom_attach,
-        capabilities = capabilities,
-        cmd          = { "gopls" },
-        filetypes    = { "go", "gomd", "gowork", "gotmpl" },
-        settings     = {
-          completeUnimported = true,
-          usePlaceholders = true,
-          analyses = {
-            unusedparams = true,
-          },
-        },
-        root_dir     = util.root_pattern("go.work", "go.mod", ".git")
-      }
+      -- lspconfig.gopls.setup {
+      --   on_attach    = custom_attach,
+      --   capabilities = capabilities,
+      --   cmd          = { "gopls" },
+      --   filetypes    = { "go", "gomd", "gowork", "gotmpl" },
+      --   settings     = {
+      --     completeUnimported = true,
+      --     usePlaceholders = true,
+      --     analyses = {
+      --       unusedparams = true,
+      --     },
+      --   },
+      --   root_dir     = util.root_pattern("go.work", "go.mod", ".git")
+      -- }
     end
   },
   {
@@ -509,23 +510,23 @@ require("lazy").setup({
       require 'colorizer'.setup()
     end
   },
-  -- {
-  --   'akinsho/flutter-tools.nvim',
-  --   lazy = false,
-  --   dependencies = {
-  --     'nvim-lua/plenary.nvim',
-  --     'stevearc/dressing.nvim', -- optional for vim.ui.select
-  --   },
-  --   config = function()
-  --     require("flutter-tools").setup {
-  --       --     settings = {
-  --       --       enableSnippets = true,
-  --       --     },
-  --     }
-  --   end,
+  {
+    'akinsho/flutter-tools.nvim',
+    lazy = false,
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'stevearc/dressing.nvim', -- optional for vim.ui.select
+    },
+    config = function()
+      require("flutter-tools").setup {
+        --     settings = {
+        --       enableSnippets = true,
+        --     },
+      }
+    end,
 
-  --   -- DO NOT SETUP dartls manually when using akinsho/flutter-tools.nvim
-  -- },
+    -- DO NOT SETUP dartls manually when using akinsho/flutter-tools.nvim
+  },
   -- {
   --   "zbirenbaum/copilot.lua",
   --   cmd = "Copilot",
@@ -681,20 +682,20 @@ require("lazy").setup({
     -- notifications as seen  in noice.nvim
     'rcarriga/nvim-notify',
   },
-  {
-    "ray-x/go.nvim",
-    dependencies = { -- optional packages
-      "ray-x/guihua.lua",
-      "neovim/nvim-lspconfig",
-      "nvim-treesitter/nvim-treesitter",
-    },
-    config = function()
-      require("go").setup()
-    end,
-    event = { "CmdlineEnter" },
-    ft = { "go", 'gomod' },
-    build = ':lua require("go.install").update_all_sync()' -- if you need to install/update all binaries
-  },
+  -- {
+  --   "ray-x/go.nvim",
+  --   dependencies = { -- optional packages
+  --     "ray-x/guihua.lua",
+  --     "neovim/nvim-lspconfig",
+  --     "nvim-treesitter/nvim-treesitter",
+  --   },
+  --   config = function()
+  --     require("go").setup()
+  --   end,
+  --   event = { "CmdlineEnter" },
+  --   ft = { "go", 'gomod' },
+  --   build = ':lua require("go.install").update_all_sync()' -- if you need to install/update all binaries
+  -- },
   {
     'folke/todo-comments.nvim',
     dependencies = { "nvim-lua/plenary.nvim" },
@@ -779,7 +780,7 @@ require("lazy").setup({
 
 
 
--- require("telescope").load_extension("flutter")
+require("telescope").load_extension("flutter")
 require('telescope').load_extension('fzf')
 
 -- vim.opt.background = "dark" -- set this to dark or light
