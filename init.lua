@@ -195,6 +195,19 @@ require("lazy").setup({
     end
 
   },
+  {
+    -- live markdown preview in the browser
+    'iamcco/markdown-preview.nvim',
+    cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
+    ft = { 'markdown' },
+    build = function()
+      require('lazy').load({ plugins = { 'markdown-preview.nvim' } })
+      vim.fn['mkdp#util#install']()
+    end,
+    keys = {
+      { '<leader>mp', '<cmd>MarkdownPreviewToggle<CR>', ft = 'markdown', desc = '[M]arkdown [P]review toggle' },
+    },
+  },
   --0=============================================================================================0
   -- ▀█▀ █▀▀ █░░ █▀▀ █▀ █▀▀ █▀█ █▀█ █▀▀
   -- ░█░ ██▄ █▄▄ ██▄ ▄█ █▄▄ █▄█ █▀▀ ██▄
